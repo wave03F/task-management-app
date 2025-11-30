@@ -1,0 +1,50 @@
+# docker-compose.yml
+
+version: '3.8'
+
+services:
+  # 1. PostgreSQL Database Service
+  db:
+    image: postgres:15-alpine
+    container_name: postgres_db
+    restart: always
+    ports:
+      # เชื่อมต่อ Port 5432 ภายนอกเข้า Port 5432 ภายใน
+      - '5432:5432'
+    environment:
+      # ต้องตรงกับค่าใน .env
+      POSTGRES_USER: ${POSTGRES_USER}
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD}
+      POSTGRES_DB: ${POSTGRES_DB}
+    volumes:
+      # เก็บข้อมูลไว้ในเครื่องเราเพื่อไม่ให้ข้อมูลหายเมื่อคอนเทนเนอร์ถูกลบ
+      - postgres_data:/var/lib/postgresql/data/
+
+  # 2. NestJS Application Service
+  app:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    container_name: nestjs_app
+    # รันหลังจาก db พร้อมแล้ว
+    depends_on:
+      - db
+    restart: always
+    ports:
+      # เชื่อมต่อ Port 3000 ภายนอกเข้า Port 3000 ภายใน (ตามค่า Default ของ NestJS)
+      - '3000:3000'
+    environment:
+      # กำหนดให้ app เชื่อมต่อกับ service db ด้วยชื่อ 'db' แทน localhost
+      POSTGRES_HOST: db
+      POSTGRES_PORT: 5432
+      POSTGRES_USER: ${POSTGRES_USER}
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD}
+      POSTGRES_DB: ${POSTGRES_DB}
+    # Mount source code เพื่อให้ HMR/Watch ทำงานได้
+    volumes:
+      - .:/app
+      - /app/node_modules # ไม่ต้อง Mount node_modules ภายนอก
+    command: npm run start:dev
+
+volumes:
+  postgres_data:
