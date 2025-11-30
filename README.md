@@ -25,6 +25,94 @@
 
 [Nest](https://github.com/nestjs/nest) framework TypeScript starter repository.
 
+## Workshop Todo List — What We Implemented
+
+- Task entity with required fields: `title`, `description`, `status` (enum: `OPEN | IN_PROGRESS | DONE`).
+- CRUD APIs under `/tasks`:
+  - Create task: `POST /tasks`
+  - Update task: `PATCH /tasks/:id`
+  - Delete task: `DELETE /tasks/:id`
+  - List tasks (no description): `GET /tasks` returns only `id, title, status`.
+  - Get task detail: `GET /tasks/:id` returns full fields.
+- Validation using `class-validator` and `class-transformer`:
+  - `CreateTaskDto` requires non-empty string `title` and `description`.
+  - `UpdateTaskDto` allows optional `title`/`description` (non-empty if provided) and validates `status` against enum.
+- PostgreSQL via TypeORM (autoLoadEntities + synchronize for development).
+
+## How to Run
+
+### Option A: Docker Compose (recommended)
+1) Ensure `.env` exists in the project root with:
+```bash
+POSTGRES_HOST=db
+POSTGRES_PORT=5432
+POSTGRES_USER=postgres
+POSTGRES_PASSWORD=postgres
+POSTGRES_DB=tasks
+```
+2) Start services:
+```bash
+docker compose up -d
+```
+3) App will be available at: http://localhost:3000
+
+Check status/logs:
+```bash
+docker compose ps
+docker compose logs --tail=100 app
+```
+
+Stop services:
+```bash
+docker compose down
+```
+
+### Option B: Local (without Docker)
+1) Run a local PostgreSQL and create a database matching `.env` values.
+2) Create `.env` in project root, for example:
+```bash
+POSTGRES_HOST=localhost
+POSTGRES_PORT=5432
+POSTGRES_USER=postgres
+POSTGRES_PASSWORD=postgres
+POSTGRES_DB=tasks
+```
+3) Install and run:
+```bash
+npm install
+npm run start:dev
+```
+App: http://localhost:3000
+
+## Endpoints & Quick Tests (PowerShell)
+
+- List (no description):
+```bash
+iwr http://localhost:3000/tasks -UseBasicParsing
+```
+
+- Create:
+```bash
+$b = @{ title = "Buy milk"; description = "2 liters" } | ConvertTo-Json
+irm http://localhost:3000/tasks -Method POST -ContentType "application/json" -Body $b
+```
+
+- Detail:
+```bash
+irm http://localhost:3000/tasks/1
+```
+
+- Update status:
+```bash
+$u = @{ status = "IN_PROGRESS" } | ConvertTo-Json
+irm http://localhost:3000/tasks/1 -Method PATCH -ContentType "application/json" -Body $u
+```
+
+- Delete:
+```bash
+iwr http://localhost:3000/tasks/1 -Method DELETE -UseBasicParsing
+```
+
 ## Project setup
 
 ```bash
