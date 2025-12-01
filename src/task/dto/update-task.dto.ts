@@ -13,6 +13,6 @@ export class UpdateTaskDto {
   description?: string;
 
   @IsOptional()
-  @IsEnum(TaskStatus) // ตรวจสอบสถานะว่าถูกต้องตาม enum
+  @IsEnum(TaskStatus) 
   status?: TaskStatus;
 }
