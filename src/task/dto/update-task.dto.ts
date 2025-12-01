@@ -1,6 +1,5 @@
-// src/task/dto/update-task.dto.ts
 import { TaskStatus } from '../task.entity';
-import { IsOptional, IsIn, IsString, IsNotEmpty } from 'class-validator';
+import { IsOptional, IsEnum, IsString, IsNotEmpty } from 'class-validator';
 
 export class UpdateTaskDto {
   @IsOptional()
@@ -14,6 +13,6 @@ export class UpdateTaskDto {
   description?: string;
 
   @IsOptional()
-  @IsIn(Object.values(TaskStatus)) // ตรวจสอบสถานะว่าถูกต้องตาม enum
+  @IsEnum(TaskStatus) // ตรวจสอบสถานะว่าถูกต้องตาม enum
   status?: TaskStatus;
 }
