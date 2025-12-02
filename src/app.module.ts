@@ -1,9 +1,8 @@
-// src/app.module.ts
-
 import { Module } from '@nestjs/common';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { ConfigModule, ConfigService } from '@nestjs/config';
 import { TaskModule } from './task/task.module'; // จะสร้างในภายหลัง
+import { AuthModule } from './auth/auth.module';
 
 @Module({
   imports: [
@@ -25,6 +24,7 @@ import { TaskModule } from './task/task.module'; // จะสร้างใน�
       inject: [ConfigService],
     }),
     TaskModule, // เพิ่ม TaskModule
+    AuthModule,
   ],
   controllers: [],
   providers: [],

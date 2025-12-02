@@ -1,13 +1,13 @@
-// src/task/task.controller.ts
-
-import { Controller, Get, Post, Body, Param, Patch, Delete, HttpCode, HttpStatus, UsePipes, ValidationPipe } from '@nestjs/common';
+import { Controller, Get, Post, Body, Param, Patch, Delete, HttpCode, HttpStatus, UsePipes, ValidationPipe, UseGuards } from '@nestjs/common';
 import { TaskService } from './task.service';
 import { Task } from './task.entity';
 import { CreateTaskDto } from './dto/create-task.dto';
 import { UpdateTaskDto } from './dto/update-task.dto';
+import { JwtAuthGuard } from '../auth/guards/jwt-auth.guard';
 
 @Controller('tasks') // Endpoint หลักคือ /tasks
 @UsePipes(ValidationPipe) // ใช้สำหรับตรวจสอบ DTO
+@UseGuards(JwtAuthGuard) // ป้องกันด้วย JWT
 export class TaskController {
   constructor(private tasksService: TaskService) {}
 
