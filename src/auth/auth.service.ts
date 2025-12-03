@@ -28,4 +28,17 @@ export class AuthService {
       access_token: await this.jwtService.signAsync(payload),
     };
   }
+
+  async register(data: { username: string; password: string }) {
+    const created = await this.usersService.createUser(data.username, data.password);
+    const payload = { username: created.username, sub: created.id };
+    return {
+      access_token: await this.jwtService.signAsync(payload),
+    };
+  }
+
+  async logout() {
+    // Stateless JWT: client should discard token. Implement blacklist if needed later.
+    return { message: 'logged out' };
+  }
 }

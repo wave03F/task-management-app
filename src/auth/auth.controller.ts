@@ -11,4 +11,15 @@ export class AuthController {
   async login(@Request() req: any) {
     return this.authService.login(req.user);
   }
+
+  @Post('register')
+  async register(@Request() req: any) {
+    const { username, password } = req.body || {};
+    return this.authService.register({ username, password });
+  }
+
+  @Post('logout')
+  async logout() {
+    return this.authService.logout();
+  }
 }
